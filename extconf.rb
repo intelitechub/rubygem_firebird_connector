@@ -18,7 +18,6 @@ WINDOWS_PLATFORMS = /(mingw32|mswin32|x64-mingw-ucrt)/
 
 if ARGV.grep(/^--with-opt-dir=/).empty?
   puts "--with-opt-dir not defined."
-  exit
 end
 
 require 'mkmf'
