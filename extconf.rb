@@ -48,7 +48,7 @@ end
 if ARGV.grep(/^--with-opt-dir=/).empty?
   opt = unquote(ENV['FIREBIRD'])
   if RUBY_PLATFORM =~ WINDOWS_PLATFORMS
-    opt = opt || read_firebird_registry
+    #opt = opt || read_firebird_registry
     opt = opt || search_firebird_path
   end
   if opt
@@ -59,6 +59,8 @@ if ARGV.grep(/^--with-opt-dir=/).empty?
     exit
   end
 end
+
+puts "ARGV: #{ARGV.to_s}"
 
 require 'mkmf'
 
