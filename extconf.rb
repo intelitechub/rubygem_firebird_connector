@@ -14,75 +14,20 @@
 # = Mac OS X (Intel)
 # * Works
 
-puts "Installing the Firebird Connector Gem..."
-
 WINDOWS_PLATFORMS = /(mingw32|mswin32|x64-mingw-ucrt)/
 
-def unquote(string)
-  string.sub(/\A(['"])?(.*?)\1?\z/m, '\2') unless string.nil?
-end
-
-def key_exists?(path)
-  begin
-    Win32::Registry::HKEY_LOCAL_MACHINE.open(path, ::Win32::Registry::KEY_READ)
-    return true
-  rescue
-    return false
-  end
-end
-
-def read_firebird_registry
-  require 'win32/registry'
-  if key_exists?('SOFTWARE\Firebird Project\Firebird Server\Instances')
-    Win32::Registry::HKEY_LOCAL_MACHINE.open('SOFTWARE\Firebird Project\Firebird Server\Instances', Win32::Registry::Constants::KEY_READ) do |reg|
-      return reg.read_s('DefaultInstance') rescue nil
-    end
-  else
-    return false
-  end
-end
-
-def search_firebird_path
-  program_files = ENV['ProgramFiles'].gsub('\\', '/').gsub(/(\w+\s+[\w\s]+)/) { |s| s.size > 8 ? s[0,6] + '~1' : s }
-  program_files_x86 = ENV['ProgramFiles'].gsub('\\', '/').gsub(/(\w+\s+[\w\s]+)/) { |s| s.size > 8 ? s[0,6] + '~2' : s }
-  result = Dir["#{program_files}/Firebird/Firebird_*"].sort.last || Dir["#{program_files_x86}/Firebird/Firebird_*"].sort.last
-end
-
 if ARGV.grep(/^--with-opt-dir=/).empty?
-  opt = unquote(ENV['FIREBIRD'])
-  if RUBY_PLATFORM =~ WINDOWS_PLATFORMS
-    #opt = opt || read_firebird_registry
-    opt = opt || search_firebird_path
-  end
-  if opt
-    ARGV << "--with-opt-dir=#{opt}"
-    puts "Firebird Path: #{opt}"
-  else
-    puts "No any Firebird instances found in system."
-    exit
-  end
+  puts "--with-opt-dir not defined."
+  exit
 end
-
-puts "ARGV: #{ARGV.to_s}"
 
 require 'mkmf'
 
-libs = %w/ fbclient gds /
+libs = %w/ fbclient /
 
 case RUBY_PLATFORM
-  when /bccwin32/
-    libs.push "fbclient_bor"
   when WINDOWS_PLATFORMS
     $CFLAGS  = $CFLAGS + " -DOS_WIN32"
-    libs.push "fbclient_ms"
-  when /darwin/
-#    hosttype = `uname -m`.chomp
-    $CFLAGS += " -DOS_UNIX"
-#    $CFLAGS.gsub!(/-arch (\w+)/) { |m| $1 == hosttype ? m : '' }
-#    $LDFLAGS.gsub!(/-arch (\w+)/) { |m| $1 == hosttype ? m : '' }
-#    CONFIG['LDSHARED'].gsub!(/-arch (\w+)/) { |m| $1 == hosttype ? m : '' }
-    $CPPFLAGS += " -I/Library/Frameworks/Firebird.framework/Headers"
-    $LDFLAGS += " -framework Firebird"
   when /linux/
     $CFLAGS  = $CFLAGS + " -DOS_UNIX"
 end
@@ -93,8 +38,7 @@ test_func = "isc_attach_database"
 
 case RUBY_PLATFORM
 when WINDOWS_PLATFORMS
-  libs.find {|lib| have_library(lib) } and
-    have_func(test_func, ["ibase.h"])
+  libs.find {|lib| have_library(lib) } and have_func(test_func, ["ibase.h"])
 else
   libs.find {|lib| have_library(lib, test_func) }
 end
