@@ -60,6 +60,8 @@ if ARGV.grep(/^--with-opt-dir=/).empty?
   end
 end
 
+dir_config('ibase', "#{ARGV.grep(/^--with-opt-dir=/).to_s}/include")
+
 puts "ARGV: #{ARGV.to_s}"
 
 require 'mkmf'
