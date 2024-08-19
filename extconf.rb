@@ -45,12 +45,15 @@ def search_firebird_path
   result = Dir["#{program_files}/Firebird/Firebird_*"].sort.last || Dir["#{program_files_x86}/Firebird/Firebird_*"].sort.last
 end
 
-if RUBY_PLATFORM =~ WINDOWS_PLATFORMS and ARGV.grep(/^--with-opt-dir=/).empty?
+if ARGV.grep(/^--with-opt-dir=/).empty?
   opt = unquote(ENV['FIREBIRD'])
-  opt = opt || read_firebird_registry
-  opt = opt || search_firebird_path
+  if RUBY_PLATFORM =~ WINDOWS_PLATFORMS
+    opt = opt || read_firebird_registry
+    opt = opt || search_firebird_path
+  end
   if opt
     ARGV << "--with-opt-dir=#{opt}"
+    puts "Firebird Path: #{opt}"
   else
     puts "No any Firebird instances found in system."
     exit
