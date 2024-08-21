@@ -13,11 +13,14 @@
 # * Unit tests take about 10 times as long to complete using Firebird Classic.  Default xinetd.conf settings may not allow the tests to complete due to the frequency with which new attachments are made.
 # = Mac OS X (Intel)
 # * Works
-
 WINDOWS_PLATFORMS = /(mingw32|mswin32|x64-mingw-ucrt)/
 
+def unquote(string)
+  string.sub(/\A(['"])?(.*?)\1?\z/m, '\2') unless string.nil?
+end
+
 if ARGV.grep(/^--with-opt-dir=/).empty?
-  puts "--with-opt-dir not defined."
+  ARGV << "--with-opt-dir=#{unquote(ENV['FIREBIRD_PATH'])}"
 end
 
 require 'mkmf'
