@@ -15,12 +15,8 @@
 # * Works
 WINDOWS_PLATFORMS = /(mingw32|mswin32|x64-mingw-ucrt)/
 
-def unquote(string)
-  string.sub(/\A(['"])?(.*?)\1?\z/m, '\2') unless string.nil?
-end
-
 if ARGV.grep(/^--with-opt-dir=/).empty?
-  ARGV << "-- --with-opt-dir=#{ENV['FIREBIRD_PATH']}"
+  ARGV << "-- --with-opt-dir='#{ENV['FIREBIRD_PATH']}'"
 end
 
 puts "ARGV: #{ARGV.to_s}"
