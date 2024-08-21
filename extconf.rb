@@ -23,6 +23,8 @@ if ARGV.grep(/^--with-opt-dir=/).empty?
   ARGV << "-- --with-opt-dir=#{unquote(ENV['FIREBIRD_PATH'])}"
 end
 
+puts "ARGV: #{ARGV.to_s}"
+
 require 'mkmf'
 
 libs = %w/ fbclient /
