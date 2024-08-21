@@ -16,7 +16,7 @@
 WINDOWS_PLATFORMS = /(mingw32|mswin32|x64-mingw-ucrt)/
 
 if ARGV.grep(/^--with-opt-dir=/).empty?
-  ARGV << "-- --with-opt-dir=#{ENV['FIREBIRD_PATH']}"
+  ARGV << "--with-opt-dir=#{ENV['FIREBIRD_PATH']}"
 end
 
 puts "ARGV: #{ARGV.to_s}"
