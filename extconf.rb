@@ -32,7 +32,9 @@ case RUBY_PLATFORM
     $CFLAGS  = $CFLAGS + " -DOS_UNIX"
 end
 
-dir_config("firebird")
+dir_config("bin")
+dir_config("include")
+dir_config("lib")
 
 test_func = "isc_attach_database"
 
